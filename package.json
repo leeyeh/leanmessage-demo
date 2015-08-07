@@ -1,0 +1,10 @@
+{
+  "name": "leanmessage-demo-dist",
+  "version": "0.0.0",
+  "dependencies": {
+    "node-static": "~0.7"
+  },
+  "scripts": {
+    "start": "./node_modules/.bin/static . -p $LC_APP_PORT"
+  }
+}
