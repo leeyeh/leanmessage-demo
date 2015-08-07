@@ -1,0 +1,44 @@
+$toolbar-height: 64px - 1px;
+.menu {
+  &.under-mask {
+    z-index: 58;
+  }
+  .logo {
+    line-height: $toolbar-height;
+    margin-bottom: -8px;
+    text-align: center;
+  }
+
+  .user {
+    height: 66px;
+  }
+}
+@media (max-width: 600px) {
+  #online-aside {
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
+
+.editor {
+  max-width: 480px;
+}
+
+.search-box {
+  height: $toolbar-height;
+  line-height: $toolbar-height;
+  input {
+    outline: none;
+    border: none;
+    height: $toolbar-height;
+    line-height: $toolbar-height;
+  }
+}
+md-list.result,
+md-list.square-clients {
+  overflow: auto;
+}
+.result-item {
+  padding-left: 60px - 16px;
+}

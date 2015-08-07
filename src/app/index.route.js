@@ -1,11 +1,23 @@
-function routerConfig ($stateProvider, $urlRouterProvider) {
+function routerConfig($stateProvider, $urlRouterProvider) {
   'ngInject';
   $stateProvider
-    .state('home', {
+    .state('conversation', {
       url: '/',
-      templateUrl: 'app/main/main.html',
-      controller: 'MainController',
-      controllerAs: 'main'
+      templateUrl: 'app/conversation/conversation.html',
+      controller: 'ConversationController',
+      controllerAs: 'conversation'
+    })
+    .state('conversation.conversations', {
+      url: 'conversations/:clientId',
+      templateUrl: 'app/conversation/conversation.html',
+      controller: 'ConversationController',
+      controllerAs: 'conversation'
+    })
+    .state('login', {
+      url: '/login',
+      templateUrl: 'app/login/login.html',
+      controller: 'LoginController',
+      controllerAs: 'login'
     });
 
   $urlRouterProvider.otherwise('/');
