@@ -5,6 +5,7 @@ import routerConfig from './index.route';
 
 import runBlock from './index.run';
 import ConversationController from './conversation/conversation.controller';
+import ConversationMessageController from './conversation/conversation-message/conversation-message.controller';
 import LoginController from './login/login.controller';
 import LeancloudRealtimeService from '../app/components/leancloudRealtime/leancloudRealtime.service';
 import UserService from '../app/components/user/user.service';
@@ -21,4 +22,5 @@ angular.module('leanmessageDemo', ['ngResource', 'ui.router', 'ngMaterial', 'ui.
   .service('rt', LeancloudRealtimeService)
   .service('user', UserService)
   .controller('ConversationController', ConversationController)
+  .controller('ConversationMessageController', ConversationMessageController)
   .controller('LoginController', LoginController);

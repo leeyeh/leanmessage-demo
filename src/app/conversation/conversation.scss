@@ -10,7 +10,7 @@ $toolbar-height: 64px - 1px;
   }
 
   .user {
-    height: 66px;
+    height: 58px;
   }
 }
 @media (max-width: 600px) {
@@ -21,10 +21,6 @@ $toolbar-height: 64px - 1px;
   }
 }
 
-.editor {
-  max-width: 480px;
-}
-
 .search-box {
   height: $toolbar-height;
   line-height: $toolbar-height;
@@ -32,7 +28,6 @@ $toolbar-height: 64px - 1px;
     outline: none;
     border: none;
     height: $toolbar-height;
-    line-height: $toolbar-height;
   }
 }
 md-list.result,

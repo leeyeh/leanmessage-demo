@@ -1,12 +1,17 @@
-class ConversitionController {
+class ConversationController {
   constructor($mdSidenav, user, $state) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
     this.userService = user;
-    this.$state = $state
+    this.$state = $state;
 
-    this.squareConversition = {};
+    this.defaultConversation = {
+      name: '广场',
+      id: '551a2847e4b04d688d73dc54'
+    };
+
+    this.squareConversation = {};
     this.squareClients = ['hjiang', 'jfeng', 'jxi', 'bobama'];
     this.conversations = ['vputin', 'jxi', 'bobama'];
 
@@ -17,11 +22,21 @@ class ConversitionController {
     this.isSearchOpen = undefined;
   }
 
+  changeTo(clientId) {
+    this.$state.go('conversation.message', {
+      clientId: clientId
+    });
+    this.closeAll();
+  }
+
   toggle(id) {
     this.$mdSidenav(id).toggle();
   }
   close(id) {
     this.$mdSidenav(id).close();
+  }
+  closeAll() {
+    ['menu', 'online', 'online-search'].map((id) => this.close(id));
   }
 
   query(queryString) {
@@ -39,4 +54,4 @@ class ConversitionController {
   }
 }
 
-export default ConversitionController;
+export default ConversationController;

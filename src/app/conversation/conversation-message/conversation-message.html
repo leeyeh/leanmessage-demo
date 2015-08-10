@@ -1,0 +1,11 @@
+<div flex></div>
+<md-content layout layout-align="center center">
+  <form class="editor" layout layout-align="center center" flex>
+    <md-input-container md-no-float flex class="textarea">
+      <textarea ng-model="conversationMessage.currentConversation.draft" placeholder="说点什么……"></textarea>
+    </md-input-container>
+    <md-button class="md-icon-button" aria-label="Send" ng-click="conversationMessage.send(conversationMessage.currentConversation.draft)">
+      <md-icon>send</md-icon>
+    </md-button>
+  </form>
+</md-content>
