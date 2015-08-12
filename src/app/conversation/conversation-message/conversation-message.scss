@@ -1,7 +1,12 @@
-
 .editor {
   max-width: 480px;
   .textarea {
     padding: 12px 8px;
   }
+}
+
+.max-results-amount-hint {
+  color: rgba(0,0,0,.5);
+  text-align: center;
+  font-size: .9em;
 }

@@ -1,4 +1,4 @@
-function routerConfig($stateProvider, $urlRouterProvider) {
+function routerConfig($stateProvider, $urlRouterProvider, defaultConversation) {
   'ngInject';
   $stateProvider
     .state('conversation', {
@@ -21,7 +21,7 @@ function routerConfig($stateProvider, $urlRouterProvider) {
       controllerAs: 'login'
     });
 
-  $urlRouterProvider.otherwise('/conversations/广场');
+  $urlRouterProvider.otherwise('/conversations/' + defaultConversation.id);
 }
 
 export default routerConfig;

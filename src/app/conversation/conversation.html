@@ -1,13 +1,16 @@
 <md-sidenav class="menu md-sidenav-left md-whiteframe-z2" layout="column"
-  ng-class="{ 'under-mask': conversation.isOnlineOpen || conversation.isSearchOpen } "
+  ng-class="{ 'under-mask': !conversation.isMenuOpen } "
   md-component-id="menu"
+  md-is-open="conversation.isMenuOpen"
   md-is-locked-open="$mdMedia('gt-sm')">
   <div flex layout="column" style="overflow:auto;">
     <div class='logo'>LeanMessage</div>
     <md-list flex>
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">群聊</md-subheader>
-      <md-list-item ng-click="conversation.changeTo(conversation.defaultConversation.name)">
+      <md-list-item
+        ng-click="conversation.changeTo(conversation.defaultConversation.id)"
+        ng-class="{'active': conversation.defaultConversation.id === conversation.$state.params.clientId}">
         <p>{{::conversation.defaultConversation.name}}</p>
       </md-list-item>
       <md-divider></md-divider>
@@ -28,65 +31,5 @@
   </div>
 </md-sidenav>
 
-<div layout="column" flex>
-  <md-toolbar>
-    <div class="md-toolbar-tools">
-      <md-button class="md-icon-button" aria-label="Menu" hide-gt-sm ng-click="conversation.toggle('menu')">
-        <md-icon>menu</md-icon>
-      </md-button>
-      <h2>
-        <span>{{conversation.$state.params.clientId}}</span>
-      </h2>
-      <span flex></span>
-      <md-button class="md-icon-button" aria-label="Online Clients" hide-gt-md ng-click="conversation.toggle('online')">
-        <md-icon>group</md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
-  <div flex layout="column" ui-view>
-
-  </div>
+<div layout flex ui-view>
 </div>
-
-<md-sidenav id="online-aside" class=" md-sidenav-right md-whiteframe-z2" md-component-id="online" md-is-locked-open="$mdMedia('gt-md')" layout="column" md-is-open="conversation.isOnlineOpen">
-  <md-toolbar>
-    <div class="md-toolbar-tools">
-      <md-button class="md-icon-button" aria-label="Back" hide-gt-sm ng-click="conversation.close('online')">
-        <md-icon>arrow_back</md-icon>
-      </md-button>
-      <h2>在线用户</h2>
-      <span flex></span>
-      <md-button class="md-icon-button" aria-label="Search" ng-click="conversation.toggle('online-search')">
-        <md-icon>search</md-icon>
-      </md-button>
-    </div>
-  </md-toolbar>
-  <md-list class="square-clients" flex>
-    <md-list-item ng-repeat="client in conversation.squareClients"
-      ng-click="conversation.changeTo('@' + client)">
-      <p> {{ client }} </p>
-    </md-list-item>
-  </md-list>
-</md-sidenav>
-
-<md-sidenav id="online-aside" class=" md-sidenav-right md-whiteframe-z2" md-component-id="online-search" layout="column" md-is-open="conversation.isSearchOpen">
-  <form ng-submit="$event.preventDefault()">
-    <div class="search-box" layout layout-align="center center">
-      <md-button class="md-icon-button" aria-label="Back" ng-click="conversation.close('online-search')">
-        <md-icon>arrow_back</md-icon>
-      </md-button>
-      <input type="text" flex ng-model="conversation.queryString" ng-change="conversation.query(conversation.queryString)" placeholder="搜索在线用户" md-sidenav-focus>
-      <md-button class="md-icon-button" aria-label="Clear" ng-click="conversation.clearQuery()" ng-hide="conversation.queryString===''">
-        <md-icon>clear</md-icon>
-      </md-button>
-    </div>
-    <md-divider></md-divider>
-
-  </form>
-  <md-list class="result" flex>
-    <md-list-item ng-repeat="client in conversation.queryClients"
-      ng-click="conversation.changeTo('@' + client)">
-      <p class="result-item"> {{ client }} </p>
-    </md-list-item>
-  </md-list>
-</md-sidenav>
