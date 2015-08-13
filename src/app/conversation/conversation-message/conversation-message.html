@@ -7,7 +7,7 @@
       </md-button>
       <h2>
         <span>{{
-          conversationMessage.conv.name ||
+          conversationMessage.conv.name ? conversationMessage.conv.name :
           conversationMessage.$state.params.clientId[0] === '@' ? conversationMessage.$state.params.clientId :
           conversationMessage.defaultConversation.name
         }}</span>

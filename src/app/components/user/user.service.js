@@ -44,6 +44,12 @@ class UserService {
     return this.connect(id);
   }
 
+  logout() {
+    localStorage.removeItem('user');
+    this.close();
+    this._connected = false;
+  }
+
   isLoggedin() {
     return this._connected;
   }
@@ -53,6 +59,9 @@ class UserService {
       appId: appId,
       clientId: clientId
     });
+  }
+  close() {
+    this.rt.close();
   }
 }
 

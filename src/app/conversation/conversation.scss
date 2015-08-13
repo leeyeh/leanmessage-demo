@@ -9,6 +9,10 @@ $toolbar-height: 64px - 1px;
     text-align: center;
   }
 
+  md-list-item.active{
+    background-color: rgba(0, 0, 0, .04);
+  }
+
   .user {
     height: 58px;
   }

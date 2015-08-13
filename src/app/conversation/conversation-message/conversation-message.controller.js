@@ -1,5 +1,5 @@
 class ConversationMessageController {
-  constructor($mdSidenav, user, $state, $scope, rt, conversationCache, defaultConversation) {
+  constructor($mdSidenav, user, $state, $scope, $q, rt, conversationCache, defaultConversation) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
@@ -20,7 +20,7 @@ class ConversationMessageController {
     if (conversationRoute[0] === '@' && conversationRoute.length > 1) {
       // 单聊
       var clientId = conversationRoute.slice(1);
-      conversationId = conversationCache.get(clientId);
+      conversationId = conversationCache.getConversationId(clientId);
 
       console.log(conversationId);
       if (conversationId === null) {
@@ -29,7 +29,7 @@ class ConversationMessageController {
           members: [clientId]
         });
         // 写入 cache
-        conversationPromise.then((conv) => conversationCache.set(clientId, conv.id));
+        conversationPromise.then((conv) => conversationCache.setConversationId(clientId, conv.id));
       } else {
         // 获取一个已存在的对话
         conversationPromise = rt.conv(conversationId);
@@ -39,8 +39,12 @@ class ConversationMessageController {
       this.isGroupConversation = true;
       conversationId = conversationRoute;
       conversationPromise = rt.conv(conversationId);
+    } else if (conversationRoute === '') {
+      this.changeTo(defaultConversation.id, {
+        location: 'replace'
+      });
     } else {
-      this.name = '404';
+      conversationPromise = $q.reject(new Error('404: Illegal id in URI'));
     }
 
     if (conversationPromise) {
@@ -48,7 +52,10 @@ class ConversationMessageController {
       conversationPromise.then((conv) => {
         this.conv = conv;
         $scope.$on('$destroy', () => conv.destroy());
-        $scope.$digest();
+      }.bind(this)).catch((e) => {
+        this.conv = {
+          name: '👻' + e.message
+        };
       }.bind(this));
     }
 
@@ -73,10 +80,10 @@ class ConversationMessageController {
     this.query();
   }
 
-  changeTo(clientId) {
+  changeTo(clientId, options) {
     this.$state.go('conversation.message', {
       clientId: clientId
-    });
+    }, options);
     this.closeAll();
   }
 

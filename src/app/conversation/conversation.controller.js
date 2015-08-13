@@ -1,17 +1,34 @@
 class ConversationController {
-  constructor($mdSidenav, user, rt, $state, defaultConversation) {
+  constructor($mdSidenav, user, rt, $state, conversationCache, defaultConversation, $rootScope) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
     this.userService = user;
     this.rt = rt;
     this.$state = $state;
+    this.conversationCache = conversationCache;
 
     this.defaultConversation = defaultConversation;
 
-    this.conversations = ['vputin', 'jxi', 'bobama'];
+    this.conversations = conversationCache.getConversationHistory();
 
     this.isMenuOpen = undefined;
+
+    // FIXME: 这里的事件错了，应该是莫个对话收到或发出了新消息之后调整顺序
+    // $rootScope.$on('$stateChangeSuccess', (event, next) => {
+    //   if (next.name !== 'conversation.message') {
+    //     return;
+    //   }
+    //   if ($state.params.clientId[0] !== '@') {
+    //     return;
+    //   }
+    //   var clientId = $state.params.clientId.slice(1);
+    //   var index = this.conversations.indexOf(clientId);
+    //   this.conversations = [clientId]
+    //     .concat(this.conversations.slice(0, index))
+    //     .concat(this.conversations.slice(index + 1));
+    //   console.log(clientId,index, this.conversations);
+    // });
 
   }
 
@@ -27,6 +44,12 @@ class ConversationController {
   }
   close(id) {
     this.$mdSidenav(id).close();
+  }
+
+  logout() {
+    this.conversationCache.clearAll();
+    this.userService.logout();
+    this.$state.go('login');
   }
 
 }

@@ -15,8 +15,10 @@
       </md-list-item>
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">单聊</md-subheader>
-      <md-list-item ng-repeat="conv in conversation.conversations"
-        ng-click="conversation.changeTo('@' + conv)">
+      <md-list-item
+        ng-repeat="conv in conversation.conversations"
+        ng-click="conversation.changeTo('@' + conv)"
+        ng-class="{'active': '@' + conv === conversation.$state.params.clientId}">
         <p> {{ conv }} </p>
       </md-list-item>
     </md-list>
@@ -25,7 +27,7 @@
   <div class="user" layout layout-align="center center" layout-padding>
     <img gravatar-src-once="conversation.userService.user.email" gravatar-size="40">
     <span flex>{{::conversation.userService.user.id}}</span>
-    <md-button class="md-icon-button" aria-label="Logout" ui-sref="login">
+    <md-button class="md-icon-button" aria-label="Logout" ng-click="conversation.logout()">
       <md-icon>exit_to_app</md-icon>
     </md-button>
   </div>
