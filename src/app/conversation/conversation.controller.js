@@ -24,10 +24,14 @@ class ConversationController {
     //   }
     //   var clientId = $state.params.clientId.slice(1);
     //   var index = this.conversations.indexOf(clientId);
-    //   this.conversations = [clientId]
-    //     .concat(this.conversations.slice(0, index))
-    //     .concat(this.conversations.slice(index + 1));
-    //   console.log(clientId,index, this.conversations);
+    //   if (index === -1) {
+    //     this.conversations.unshift(clientId);
+    //   } else {
+    //     this.conversations = [clientId]
+    //       .concat(this.conversations.slice(0, index))
+    //       .concat(this.conversations.slice(index + 1));
+    //   }
+    //   console.log(clientId, index, this.conversations);
     // });
 
   }

@@ -1,3 +1,5 @@
+import EventEmitter from '../../../../bower_components/eventemitter2';
+
 class LeancloudRealtimeService {
   constructor($rootScope, realtime, $q) {
     'ngInject';
@@ -80,8 +82,9 @@ class LeancloudRealtimeService {
   }
 }
 
-class Conversation {
+class Conversation extends EventEmitter {
   constructor(originalConversation, $rootScope, $q) {
+    super();
     this.originalConversation = originalConversation;
     this.$rootScope = $rootScope;
     this.$q = $q;
@@ -91,6 +94,8 @@ class Conversation {
       'name',
       'attr'
     ].forEach((prop) => this[prop] = originalConversation[prop]);
+
+    this._bindEvents();
 
     // TODO: members 应该是由 SDK 来维护的
     // SDK 中的 Conversation 封装把 members 等初始化的时候就能拿到的 members 信息都丢掉了
@@ -103,12 +108,49 @@ class Conversation {
     });
   }
 
+  _bindEvents() {
+    this.originalConversation.receive((message) => {
+      this.emit('message', message);
+      this.$rootScope.$digest();
+    });
+  }
+
   // members 变成属性由 service 来维护，用户不再需要 list 方法
   _list() {
     return this.$q((resolve) => {
       this.originalConversation.list((members) => {
         console.log(members);
         resolve(members);
+      });
+    });
+  }
+  log(options, callback) {
+    if (callback === undefined) {
+      [callback, options] = [options, {}];
+    }
+    return this.$q((resolve) => {
+      this.originalConversation.log(options, (messages) => {
+        if (typeof callback === 'function') {
+          callback(messages);
+        }
+        resolve(messages);
+      });
+    });
+  }
+  join(callback = () => {}) {
+    return this.$q((resolve) => {
+      this.originalConversation.join(() => {
+        callback();
+        resolve();
+      });
+    });
+  }
+  send(data, options = {}, callback = () => {}) {
+    return this.$q((resolve) => {
+      this.originalConversation.send(data, options, (ack) => {
+        // TODO: 构造一个 message 返回，而不是 ack
+        callback(ack);
+        resolve(ack);
       });
     });
   }

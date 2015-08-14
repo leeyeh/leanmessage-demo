@@ -18,14 +18,17 @@
       </md-button>
     </div>
   </md-toolbar>
-  <div flex></div>
+  <md-content layout-padding flex class="messages">
+    <!-- TODO: fromPeerId -> from -->
+    <p ng-repeat="message in conversationMessage.messages">{{message.timestamp | date:'h:mm'}} {{ message.fromPeerId }}: {{ message.msg.text }}</p>
+  </md-content>
 
-  <md-content layout layout-align="center center">
+  <md-content layout layout-align="center center" class="editor-wrapper">
     <form class="editor" layout layout-align="center center" flex>
       <md-input-container md-no-float flex class="textarea">
         <textarea ng-model="conversationMessage.currentconversationMessage.draft" placeholder="说点什么……"></textarea>
       </md-input-container>
-      <md-button class="md-icon-button" aria-label="Send" ng-click="conversationMessage.send(conversationMessage.currentconversationMessage.draft)">
+      <md-button class="md-icon-button" aria-label="Send" ng-click="conversationMessage.send()">
         <md-icon>send</md-icon>
       </md-button>
     </form>

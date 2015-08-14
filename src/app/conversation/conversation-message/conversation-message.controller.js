@@ -14,6 +14,7 @@ class ConversationMessageController {
 
     var conversationRoute = $state.params.clientId;
     this.isGroupConversation = false;
+    this.messages = [];
 
     var conversationPromise, conversationId;
 
@@ -22,7 +23,6 @@ class ConversationMessageController {
       var clientId = conversationRoute.slice(1);
       conversationId = conversationCache.getConversationId(clientId);
 
-      console.log(conversationId);
       if (conversationId === null) {
         // 新建一个对话
         conversationPromise = rt.conv({
@@ -38,7 +38,11 @@ class ConversationMessageController {
       // 群聊
       this.isGroupConversation = true;
       conversationId = conversationRoute;
-      conversationPromise = rt.conv(conversationId);
+      conversationPromise = rt.conv(conversationId).then(
+        (conv) => conv.join().then(
+          () => $q.resolve(conv)
+        )
+      );
     } else if (conversationRoute === '') {
       this.changeTo(defaultConversation.id, {
         location: 'replace'
@@ -51,8 +55,11 @@ class ConversationMessageController {
       // 将 conversation 与当前 controller 绑定
       conversationPromise.then((conv) => {
         this.conv = conv;
+        conv.log().then((messages) => this.messages = messages.concat(this.messages));
+        conv.on('message', (message) => this.messages.push(message));
         $scope.$on('$destroy', () => conv.destroy());
       }.bind(this)).catch((e) => {
+        // 将异常信息显示在页面上
         this.conv = {
           name: '👻' + e.message
         };
@@ -61,8 +68,16 @@ class ConversationMessageController {
 
   }
 
-  send(message) {
-    console.log(message);
+  send() {
+    this.conv.send({
+      text: this.currentconversationMessage.draft
+    }, {
+      type: 'text'
+    }).then((message) => {
+      console.log(message);
+      this.messages.push(message);
+    });
+    this.currentconversationMessage.draft = '';
   }
 
   query(queryString) {

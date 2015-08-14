@@ -15,29 +15,6 @@ $toolbar-height: 64px - 1px;
 
   .user {
     height: 58px;
+    min-height: 58px;
   }
-}
-@media (max-width: 600px) {
-  #online-aside {
-    width: 100%;
-    min-width: 100%;
-    max-width: 100%;
-  }
-}
-
-.search-box {
-  height: $toolbar-height;
-  line-height: $toolbar-height;
-  input {
-    outline: none;
-    border: none;
-    height: $toolbar-height;
-  }
-}
-md-list.result,
-md-list.square-clients {
-  overflow: auto;
-}
-.result-item {
-  padding-left: 60px - 16px;
 }
