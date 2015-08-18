@@ -10,6 +10,8 @@ import LoginController from './login/login.controller';
 import LeancloudRealtimeService from './components/leancloud-realtime/leancloud-realtime.service';
 import ConversationCacheService from './components/conversation-cache/conversation-cache.service';
 import UserService from './components/user/user.service';
+import ReverseInfiniteListDirective from './components/reverse-infinite-list/reverse-infinite-list.directive';
+import MessageDirective from './components/message/message.directive';
 
 angular.module('leanmessageDemo', ['ngResource', 'ui.router', 'ngMaterial', 'ui.gravatar'])
   .constant('moment', moment)
@@ -25,6 +27,8 @@ angular.module('leanmessageDemo', ['ngResource', 'ui.router', 'ngMaterial', 'ui.
   .service('rt', LeancloudRealtimeService)
   .service('conversationCache', ConversationCacheService)
   .service('user', UserService)
+  .directive('infiniteList', ReverseInfiniteListDirective)
+  .directive('message', MessageDirective)
   .controller('ConversationController', ConversationController)
   .controller('ConversationMessageController', ConversationMessageController)
   .controller('LoginController', LoginController);

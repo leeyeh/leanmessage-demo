@@ -1,10 +1,12 @@
 class ConversationMessageController {
-  constructor($mdSidenav, user, $state, $scope, $q, rt, conversationCache, defaultConversation) {
+  constructor($mdSidenav, user, $state, $scope, $q, rt, conversationCache, defaultConversation, $timeout, $anchorScroll) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
     this.userService = user;
     this.$state = $state;
+    this.$timeout = $timeout;
+    this.$anchorScroll = $anchorScroll;
 
     this.queryString = '';
     this.queryClients = [];
@@ -55,8 +57,14 @@ class ConversationMessageController {
       // 将 conversation 与当前 controller 绑定
       conversationPromise.then((conv) => {
         this.conv = conv;
-        conv.log().then((messages) => this.messages = messages.concat(this.messages));
-        conv.on('message', (message) => this.messages.push(message));
+        conv.log().then((messages) => {
+          this.messages = messages.concat(this.messages);
+          this.scrollToBottom();
+        });
+        conv.on('message', (message) => {
+          this.messages.push(message);
+          this.scrollToBottom();
+        });
         $scope.$on('$destroy', () => conv.destroy());
       }.bind(this)).catch((e) => {
         // 将异常信息显示在页面上
@@ -76,6 +84,7 @@ class ConversationMessageController {
     }).then((message) => {
       console.log(message);
       this.messages.push(message);
+      this.scrollToBottom();
     });
     this.currentconversationMessage.draft = '';
   }
@@ -110,6 +119,21 @@ class ConversationMessageController {
   }
   closeAll() {
     ['online', 'online-search'].map((id) => this.close(id));
+  }
+
+  scrollToBottom() {
+    return this.$timeout(() => this.$anchorScroll('message-view-bottom'), 0);
+  }
+
+  loadMore() {
+    if (this.conv === undefined) {
+      return;
+    }
+    return this.conv.log({
+      t: this.messages.length ? this.messages[0].timestamp : null
+    }, null).then((messages) => {
+      this.messages = messages.concat(this.messages);
+    });
   }
 
 }

@@ -1,0 +1,22 @@
+.message {
+  display: block;
+  margin: 16px 8px;
+  .time {
+    color: #666;
+    font-size: 50%;
+    text-align: center;
+    margin: 6px;
+  }
+  .user {
+    margin: 6px 0;
+    font-size: 80%;
+  }
+  .content {
+    max-width: 240px;
+    padding: 10px;
+    margin: 10px 0;
+    background: #F6F6F6 ;
+    word-wrap: break-word;
+  }
+
+}
