@@ -1,4 +1,6 @@
-<!-- TODO: fromPeerId -> from -->
 <div ng-if="vm.displayTime" class="time">{{vm.message.timestamp | date:'h:mm'}}</div>
-<div class="user">{{ vm.message.fromPeerId }}</div>
-<div class="content">{{ vm.message.msg.text }}</div>
+<div class="message" ng-class="{mine: vm.isMine}" layout="column">
+  <!-- TODO: fromPeerId -> from -->
+  <div class="user" ng-if="!vm.isMine">{{ vm.message.fromPeerId }}</div>
+  <div class="content">{{ vm.message.msg.text }}</div>
+</div>

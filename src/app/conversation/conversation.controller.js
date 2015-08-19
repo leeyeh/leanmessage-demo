@@ -1,5 +1,5 @@
 class ConversationController {
-  constructor($mdSidenav, user, rt, $state, conversationCache, defaultConversation, $rootScope) {
+  constructor($mdSidenav, user, rt, $state, conversationCache, defaultConversation) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;

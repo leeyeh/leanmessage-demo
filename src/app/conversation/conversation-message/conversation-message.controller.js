@@ -3,7 +3,7 @@ class ConversationMessageController {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
-    this.userService = user;
+    this.user = user;
     this.$state = $state;
     this.$timeout = $timeout;
     this.$anchorScroll = $anchorScroll;

@@ -5,11 +5,11 @@ function MessageDirective() {
     restrict: 'E',
     scope: {
       message: '=',
-      previousMessage: '='
+      previousMessage: '=',
+      isMine: '='
     },
     templateUrl: 'app/components/message/message.html',
     link: (scope, elem) => {
-      elem.addClass('message');
     },
     controller: MessageController,
     controllerAs: 'vm',
