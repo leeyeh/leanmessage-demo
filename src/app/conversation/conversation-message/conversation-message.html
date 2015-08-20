@@ -22,7 +22,7 @@
     <message ng-repeat="(index, message) in conversationMessage.messages"
       message="message"
       previous-message="conversationMessage.messages[index - 1]"
-      is-mine="message.fromPeerId == conversationMessage.user.user.id"></message>
+      is-mine="message.fromPeerId === undefined || message.fromPeerId == conversationMessage.user.user.id"></message>
     <div id="message-view-bottom"></div>
   </md-content>
 

@@ -1,10 +1,9 @@
 class ConversationController {
-  constructor($mdSidenav, user, rt, $state, conversationCache, defaultConversation) {
+  constructor($mdSidenav, user, $state, conversationCache, defaultConversation) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
     this.userService = user;
-    this.rt = rt;
     this.$state = $state;
     this.conversationCache = conversationCache;
 
@@ -52,7 +51,7 @@ class ConversationController {
 
   logout() {
     this.conversationCache.clearAll();
-    this.userService.logout();
+    this.user.logout();
     this.$state.go('login');
   }
 

@@ -20,7 +20,6 @@ function MessageDirective() {
 class MessageController {
   constructor() {
     'ngInject';
-    console.log(this.message.timestamp);
     if (this.previousMessage) {
       var thisMinute = Math.floor(this.message.timestamp / 60000);
       var previousMinute = Math.floor(this.previousMessage.timestamp / 60000);

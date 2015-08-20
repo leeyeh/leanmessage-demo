@@ -80,6 +80,10 @@ class LeancloudRealtimeService {
   conv(...args) {
     return this.room(...args);
   }
+
+  assign(messageClass) {
+    MessageParser.assign(messageClass);
+  }
 }
 
 class Conversation extends EventEmitter {
@@ -110,7 +114,7 @@ class Conversation extends EventEmitter {
 
   _bindEvents() {
     this.originalConversation.receive((message) => {
-      this.emit('message', message);
+      this.emit('message', MessageParser.parse(message));
       this.$rootScope.$digest();
     });
   }
@@ -130,6 +134,8 @@ class Conversation extends EventEmitter {
     }
     return this.$q((resolve) => {
       this.originalConversation.log(options, (messages) => {
+        messages = messages.map((message) => MessageParser.parse(message));
+        console.log(messages);
         if (typeof callback === 'function') {
           callback(messages);
         }
@@ -145,12 +151,18 @@ class Conversation extends EventEmitter {
       });
     });
   }
-  send(data, options = {}, callback = () => {}) {
+  send(message, callback = () => {}) {
+    if (typeof message === 'string') {
+      return this.send(new Message(message));
+    }
+    var options = {
+      r: message.needReceipt,
+      transient: message.transient
+    };
     return this.$q((resolve) => {
-      this.originalConversation.send(data, options, (ack) => {
-        // TODO: 构造一个 message 返回，而不是 ack
-        callback(ack);
-        resolve(ack);
+      this.originalConversation.send(message.toString(), options, () => {
+        callback(message);
+        resolve(message);
       });
     });
   }
@@ -159,5 +171,102 @@ class Conversation extends EventEmitter {
     console.log('destroy');
   }
 }
+
+export class Message {
+  constructor(messageContent, mataData ={}) {
+    {
+      if (typeof content === 'string') {
+        this.content = messageContent;
+      }
+      if (mataData.fromPeerId) {
+        mataData.from = mataData.fromPeerId;
+      }
+      angular.extend(this, {
+        timestamp: Date.now(),
+        from: undefined,
+        needReceipt: false,
+        transient: false
+      }, mataData);
+    }
+  }
+  toString(data) {
+    return JSON.stringify(data || this.content);
+  }
+  static parse(content, metaData) {
+    if (typeof content === 'string') {
+      return new Message(content, metaData);
+    }
+  }
+}
+
+export class TypedMessage extends Message {
+  constructor(content, mataData) {
+    super(null, mataData);
+    this.content = content;
+    this.content.type = 0;
+  }
+  toString(data) {
+    return super.toString(angular.extend({}, data, {
+      _lctext: this.content.text,
+      _lcattrs: this.content.attr,
+      _lctype: this.content.type
+    }));
+  }
+  static parse(content, metaData) {
+    if (typeof content._lctype === 0) {
+      return new TypedMessage({
+        text: content._lctext,
+        attr: content._attrs
+      }, metaData);
+    }
+  }
+}
+export class TextMessage extends TypedMessage {
+  constructor(content, mataData) {
+    if (typeof content === 'string') {
+      content = {
+        text: content
+      };
+    }
+    super(content, mataData);
+    this.content.type = -1;
+  }
+  toString(data) {
+    return super.toString(data);
+  }
+  static parse(content, metaData) {
+    if (typeof content._lctype === -1) {
+      return new TextMessage(content, metaData);
+    }
+    // 兼容现在的 sdk
+    if (content.msg.type === 'text') {
+      return new TextMessage(content.msg,content);
+    }
+  }
+}
+
+export class MessageParser {
+  static parse(message) {
+    // 这里 sdk 已经包了一层，这里的实现是为了替代这一层包装
+    // 暂时先用 sdk 包装后的 message
+    for (var Klass of this._messageClasses) {
+      try {
+        let result = Klass.parse(message);
+        if (result !== undefined) {
+          return result;
+        }
+      } catch (e) {}
+    }
+  }
+  static assign(messageClass) {
+    if (messageClass && messageClass.parse && messageClass.toString) {
+      this._messageClasses.unshift(messageClass);
+    } else {
+      throw new TypeError('Invalid messageClass.');
+    }
+  }
+}
+MessageParser._messageClasses = [];
+[Message, TypedMessage, TextMessage].forEach((Klass) => MessageParser.assign(Klass));
 
 export default LeancloudRealtimeService;

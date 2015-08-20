@@ -9,6 +9,7 @@ $arrow-size: 8px;
 
 .message {
   padding: 6px 8px;
+  align-items: flex-start;
 
   .user {
     font-size: 80%;
@@ -39,8 +40,9 @@ $arrow-size: 8px;
     align-items: flex-end;
 
     .content {
-      margin: 8px 0 12px;
-      $background: #d5eaf9;
+      margin: 8px 0 12px 12px;
+      color: white;
+      $background: #2c97e8;
       background: $background;
 
       &:after {
@@ -54,4 +56,24 @@ $arrow-size: 8px;
       }
     }
   }
+}
+
+@keyframes fadeInOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: .1;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+[animation="fadeInOut"] {
+  animation-duration: 1.6s;
+  animation-iteration-count: infinite;
+  animation-name: fadeInOut;
 }
