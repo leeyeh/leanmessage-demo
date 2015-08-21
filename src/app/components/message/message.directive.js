@@ -9,8 +9,6 @@ function MessageDirective() {
       isMine: '='
     },
     templateUrl: 'app/components/message/message.html',
-    link: (scope, elem) => {
-    },
     controller: MessageController,
     controllerAs: 'vm',
     bindToController: true
@@ -20,7 +18,7 @@ function MessageDirective() {
 class MessageController {
   constructor() {
     'ngInject';
-    if (this.previousMessage) {
+    if (this.previousMessage && this.previousMessage) {
       var thisMinute = Math.floor(this.message.timestamp / 60000);
       var previousMinute = Math.floor(this.previousMessage.timestamp / 60000);
       if (thisMinute !== previousMinute) {

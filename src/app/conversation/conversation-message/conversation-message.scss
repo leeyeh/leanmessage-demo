@@ -17,6 +17,11 @@
 .messages {
   background-color: transparent;
   height: 0;
+
+  &-wrapper {
+    max-width: 480px;
+    margin: 0 auto;
+  }
 }
 
 @media (max-width: 600px) {

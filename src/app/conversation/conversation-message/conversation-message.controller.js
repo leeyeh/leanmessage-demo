@@ -1,5 +1,5 @@
 class ConversationMessageController {
-  constructor($mdSidenav, user, $state, $scope, $q, rt, TextMessage, conversationCache, defaultConversation, $timeout, $anchorScroll) {
+  constructor($mdSidenav, user, $state, $scope, $q, rt, LCTextMessage, conversationCache, defaultConversation, $timeout, $anchorScroll) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
@@ -8,7 +8,7 @@ class ConversationMessageController {
     this.$timeout = $timeout;
     this.$anchorScroll = $anchorScroll;
 
-    this.TextMessage = TextMessage;
+    this.LCTextMessage = LCTextMessage;
 
     this.queryString = '';
     this.queryClients = [];
@@ -79,7 +79,7 @@ class ConversationMessageController {
   }
 
   send() {
-    var message = new this.TextMessage(this.currentconversationMessage.draft);
+    var message = new this.LCTextMessage(this.currentconversationMessage.draft);
     message._state = 'sending';
     this.messages.push(message);
     this.scrollToBottom();

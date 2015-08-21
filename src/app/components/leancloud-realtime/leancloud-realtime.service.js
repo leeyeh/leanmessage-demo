@@ -1,9 +1,7 @@
-import EventEmitter from '../../../../bower_components/eventemitter2';
+import EventEmitter from 'eventemitter2';
 
-class LeancloudRealtimeService {
+class Realtime {
   constructor($rootScope, realtime, $q) {
-    'ngInject';
-
     this.$rootScope = $rootScope;
     this.realtime = realtime;
     this.$q = $q;
@@ -172,8 +170,8 @@ class Conversation extends EventEmitter {
   }
 }
 
-export class Message {
-  constructor(messageContent, mataData ={}) {
+class Message {
+  constructor(messageContent, mataData = {}) {
     {
       if (typeof content === 'string') {
         this.content = messageContent;
@@ -199,7 +197,7 @@ export class Message {
   }
 }
 
-export class TypedMessage extends Message {
+class TypedMessage extends Message {
   constructor(content, mataData) {
     super(null, mataData);
     this.content = content;
@@ -221,7 +219,7 @@ export class TypedMessage extends Message {
     }
   }
 }
-export class TextMessage extends TypedMessage {
+class TextMessage extends TypedMessage {
   constructor(content, mataData) {
     if (typeof content === 'string') {
       content = {
@@ -240,12 +238,12 @@ export class TextMessage extends TypedMessage {
     }
     // 兼容现在的 sdk
     if (content.msg.type === 'text') {
-      return new TextMessage(content.msg,content);
+      return new TextMessage(content.msg, content);
     }
   }
 }
 
-export class MessageParser {
+class MessageParser {
   static parse(message) {
     // 这里 sdk 已经包了一层，这里的实现是为了替代这一层包装
     // 暂时先用 sdk 包装后的 message
@@ -269,4 +267,27 @@ export class MessageParser {
 MessageParser._messageClasses = [];
 [Message, TypedMessage, TextMessage].forEach((Klass) => MessageParser.assign(Klass));
 
-export default LeancloudRealtimeService;
+angular.module('leancloud-realtime', [])
+  .provider('LCRealtimeFactory', function() {
+    var realtime;
+    if (window && window.AV) {
+      realtime = window.AV.realtime;
+    }
+
+    this.setRealtime = (r) => realtime = r;
+
+    this.$get = ($rootScope, $q) => function LCRealtimeFactory() {
+      if (!realtime) {
+        throw new Error('realtime not found window.AV.realtime.It can also be configed via realtimeFactoryProvider.setRealtime().');
+      }
+      return new Realtime($rootScope, realtime, $q);
+    };
+    this.$get.$injects = ['$rootScope', '$q'];
+  })
+  .provider('LCRealtimeMessageParser', function() {
+    this.assign = MessageParser.assign.bind(MessageParser);
+    this.$get = function() {};
+  })
+  .value('LCMessage', Message)
+  .value('LCTypedMessage', TypedMessage)
+  .value('LCTextMessage', TextMessage);

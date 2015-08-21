@@ -1,7 +1,9 @@
 {
   "name": "leanmessageDemo",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "eventemitter2": "^0.4.14"
+  },
   "scripts": {
     "test": "gulp test"
   },

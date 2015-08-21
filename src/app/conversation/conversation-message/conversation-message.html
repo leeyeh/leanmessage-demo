@@ -19,11 +19,14 @@
     </div>
   </md-toolbar>
   <md-content infinite-list infinite-scroll="conversationMessage.loadMore()" layout-padding flex class="messages">
-    <message ng-repeat="(index, message) in conversationMessage.messages"
-      message="message"
-      previous-message="conversationMessage.messages[index - 1]"
-      is-mine="message.fromPeerId === undefined || message.fromPeerId == conversationMessage.user.user.id"></message>
-    <div id="message-view-bottom"></div>
+    <div class="messages-wrapper">
+      <message ng-repeat="(index, message) in conversationMessage.messages"
+        message="message"
+        ng-if="message"
+        previous-message="conversationMessage.messages[index - 1]"
+        is-mine="message.from === undefined || message.from == conversationMessage.user.user.id"></message>
+      <div id="message-view-bottom"></div>
+    </div>
   </md-content>
 
   <md-content layout layout-align="center center" class="editor-wrapper">
