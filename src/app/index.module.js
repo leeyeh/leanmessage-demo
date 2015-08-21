@@ -7,7 +7,6 @@ import runBlock from './index.run';
 import ConversationController from './conversation/conversation.controller';
 import ConversationMessageController from './conversation/conversation-message/conversation-message.controller';
 import LoginController from './login/login.controller';
-require('./components/leancloud-realtime/leancloud-realtime.service');
 import ConversationCacheService from './components/conversation-cache/conversation-cache.service';
 import UserService from './components/user/user.service';
 import ReverseInfiniteListDirective from './components/reverse-infinite-list/reverse-infinite-list.directive';

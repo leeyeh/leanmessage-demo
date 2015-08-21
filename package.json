@@ -1,5 +1,5 @@
 {
-  "name": "leanmessageDemo",
+  "name": "leanmessage-demo",
   "version": "0.0.0",
   "dependencies": {
     "eventemitter2": "^0.4.14"
