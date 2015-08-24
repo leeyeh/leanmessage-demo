@@ -17,4 +17,14 @@ $toolbar-height: 64px - 1px;
     height: 58px;
     min-height: 58px;
   }
+
+  .empty-list-hint {
+    display: none;
+    text-align:  center;
+    color: #999;
+  }
+
+  .md-subheader + .empty-list-hint {
+    display: block;
+  }
 }

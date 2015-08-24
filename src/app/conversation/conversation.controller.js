@@ -1,5 +1,5 @@
 class ConversationController {
-  constructor($mdSidenav, user, $state, conversationCache, defaultConversation) {
+  constructor($mdSidenav, user, $state, $mdToast, rt, conversationCache, defaultConversation) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
@@ -9,9 +9,23 @@ class ConversationController {
 
     this.defaultConversation = defaultConversation;
 
-    this.conversations = conversationCache.getConversationHistory();
+    // this.conversations = conversationCache.getConversationHistory();
 
     this.isMenuOpen = undefined;
+
+    rt.getMyConvs().then((convs) => {
+      this.conversations = convs;
+      if (convs.length === 0) {
+        rt.conv(defaultConversation.id).then((conv) => {
+          this.conversations.push(conv);
+          $mdToast.show(
+            $mdToast.simple()
+            .content(`欢迎使用 LeanMessage，自动加入默认群聊（${conv.name}）`)
+            .position('top right')
+          );
+        });
+      }
+    });
 
     // FIXME: 这里的事件错了，应该是莫个对话收到或发出了新消息之后调整顺序
     // $rootScope.$on('$stateChangeSuccess', (event, next) => {
@@ -35,6 +49,14 @@ class ConversationController {
 
   }
 
+  getSingleConvTarge(members) {
+    if (members[0] === this.userService.user.id) {
+      return members[1];
+    } else {
+      return members[0];
+    }
+  }
+
   changeTo(clientId) {
     this.$state.go('conversation.message', {
       clientId: clientId
@@ -51,7 +73,7 @@ class ConversationController {
 
   logout() {
     this.conversationCache.clearAll();
-    this.user.logout();
+    this.userService.logout();
     this.$state.go('login');
   }
 

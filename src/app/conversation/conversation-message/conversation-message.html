@@ -7,9 +7,9 @@
       </md-button>
       <h2>
         <span>{{
-          conversationMessage.conv.name ? conversationMessage.conv.name :
-          conversationMessage.$state.params.clientId[0] === '@' ? conversationMessage.$state.params.clientId :
-          conversationMessage.defaultConversation.name
+          conversationMessage.conv.name ||
+          (conversationMessage.$state.params.clientId[0] === '@' ? conversationMessage.$state.params.clientId :
+          (conversationMessage.conv.name || '广场 ' + conversationMessage.conv.id.slice(-4)))
         }}</span>
       </h2>
       <span flex></span>

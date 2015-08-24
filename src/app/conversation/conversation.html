@@ -9,18 +9,22 @@
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">群聊</md-subheader>
       <md-list-item
-        ng-click="conversation.changeTo(conversation.defaultConversation.id)"
-        ng-class="{'active': conversation.defaultConversation.id === conversation.$state.params.clientId}">
-        <p>{{::conversation.defaultConversation.name}}</p>
+        ng-repeat="conv in conversation.conversations"
+        ng-if="conv.members.length > 2"
+        ng-click="conversation.changeTo(conv.id)"
+        ng-class="{'active': conv.id === conversation.$state.params.clientId}">
+        <p>{{::conv.name || '广场 ' + conv.id.slice(-4) }}</p>
       </md-list-item>
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">单聊</md-subheader>
       <md-list-item
         ng-repeat="conv in conversation.conversations"
-        ng-click="conversation.changeTo('@' + conv)"
-        ng-class="{'active': '@' + conv === conversation.$state.params.clientId}">
-        <p> {{ conv }} </p>
+        ng-if="conv.members.length === 2"
+        ng-click="conversation.changeTo('@'+conversation.getSingleConvTarge(conv.members))"
+        ng-class="{'active': '@'+conversation.getSingleConvTarge(conv.members) === conversation.$state.params.clientId}">
+        <p> {{:: conversation.getSingleConvTarge(conv.members) }} </p>
       </md-list-item>
+      <div class="empty-list-hint" layout-padding>群聊中点击对方 ID 开始单聊</div>
     </md-list>
   </div>
   <md-divider></md-divider>
