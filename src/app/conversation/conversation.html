@@ -9,20 +9,28 @@
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">群聊</md-subheader>
       <md-list-item
-        ng-repeat="conv in conversation.conversations"
+        ng-repeat="conv in conversation.conversations | orderBy: '-lastMessageTime'"
         ng-if="conv.members.length > 2"
         ng-click="conversation.changeTo(conv.id)"
-        ng-class="{'active': conv.id === conversation.$state.params.clientId}">
-        <p>{{::conv.name || '广场 ' + conv.id.slice(-4) }}</p>
+        ng-class="{'active': conv.id === conversation.currentConversation.id}">
+        <p layout="row" layout-align="center center">
+          {{::conv.name || '广场 ' + conv.id.slice(-4) }}
+          <span flex></span>
+          <span ng-if="conv.unreadMessagesCount" class="unreadCount">{{conv.unreadMessagesCount}}</span>
+        </p>
       </md-list-item>
       <md-divider></md-divider>
       <md-subheader class="md-no-sticky">单聊</md-subheader>
       <md-list-item
-        ng-repeat="conv in conversation.conversations"
+        ng-repeat="conv in conversation.conversations | orderBy: '-lastMessageTime'"
         ng-if="conv.members.length === 2"
-        ng-click="conversation.changeTo('@'+conversation.getSingleConvTarge(conv.members))"
-        ng-class="{'active': '@'+conversation.getSingleConvTarge(conv.members) === conversation.$state.params.clientId}">
-        <p> {{:: conversation.getSingleConvTarge(conv.members) }} </p>
+        ng-click="conversation.changeTo('@'+conversation.getSingleConvTarget(conv.members))"
+        ng-class="{'active': conv.id === conversation.currentConversation.id}">
+        <p layout="row" layout-align="center center">
+          {{:: conversation.getSingleConvTarget(conv.members) }}
+          <span flex></span>
+          <span ng-if="conv.unreadMessagesCount" class="unreadCount">{{conv.unreadMessagesCount}}</span>
+        </p>
       </md-list-item>
       <div class="empty-list-hint" layout-padding>群聊中点击对方 ID 开始单聊</div>
     </md-list>

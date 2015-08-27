@@ -7,6 +7,7 @@ class ConversationMessageController {
     this.$state = $state;
     this.$timeout = $timeout;
     this.$anchorScroll = $anchorScroll;
+    this.$scope = $scope;
 
     this.LCTextMessage = LCTextMessage;
 
@@ -68,6 +69,7 @@ class ConversationMessageController {
           this.scrollToBottom();
         });
         $scope.$on('$destroy', () => conv.destroy());
+        $scope.$emit('conv.created', conv);
       }.bind(this)).catch((e) => {
         // 将异常信息显示在页面上
         this.conv = {
@@ -86,6 +88,7 @@ class ConversationMessageController {
     this.conv.send(message).then(
       (message) => message._state = 'sended', () => message._stats = 'failed'
     );
+    this.$scope.$emit('conv.messagesent');
     this.currentconversationMessage.draft = '';
   }
 

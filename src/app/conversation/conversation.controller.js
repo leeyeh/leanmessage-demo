@@ -1,5 +1,5 @@
 class ConversationController {
-  constructor($mdSidenav, user, $state, $mdToast, rt, conversationCache, defaultConversation) {
+  constructor($scope, $mdSidenav, user, $state, $mdToast, rt, conversationCache, defaultConversation) {
     'ngInject';
 
     this.$mdSidenav = $mdSidenav;
@@ -15,6 +15,7 @@ class ConversationController {
 
     rt.getMyConvs().then((convs) => {
       this.conversations = convs;
+      console.log(convs);
       if (convs.length === 0) {
         rt.conv(defaultConversation.id).then((conv) => {
           this.conversations.push(conv);
@@ -27,29 +28,53 @@ class ConversationController {
       }
     });
 
-    // FIXME: 这里的事件错了，应该是莫个对话收到或发出了新消息之后调整顺序
-    // $rootScope.$on('$stateChangeSuccess', (event, next) => {
-    //   if (next.name !== 'conversation.message') {
-    //     return;
-    //   }
-    //   if ($state.params.clientId[0] !== '@') {
-    //     return;
-    //   }
-    //   var clientId = $state.params.clientId.slice(1);
-    //   var index = this.conversations.indexOf(clientId);
-    //   if (index === -1) {
-    //     this.conversations.unshift(clientId);
-    //   } else {
-    //     this.conversations = [clientId]
-    //       .concat(this.conversations.slice(0, index))
-    //       .concat(this.conversations.slice(index + 1));
-    //   }
-    //   console.log(clientId, index, this.conversations);
-    // });
+    rt.on('message', (message) => console.log(message));
+
+    rt.on('message', (message) => {
+      // 某个对话收到消息后更新该对话的 lastMessageTime 字段
+      let conv = this.findFirstMatch(
+        this.conversations,
+        conv => conv.id === message.cid
+      );
+      if (conv) {
+        if (conv.id !== this.currentConversation.id) {
+          if (typeof conv.unreadMessagesCount !== 'number') {
+            conv.unreadMessagesCount = 0;
+          }
+          conv.unreadMessagesCount++;
+        }
+      }
+
+    });
+
+    $scope.$on('conv.created', (event, conv) => {
+      this.currentConversation = conv;
+
+      let currentConv = this.findFirstMatch(
+        this.conversations,
+        conv => conv.id === this.currentConversation.id
+      );
+      currentConv.unreadMessagesCount = 0;
+    });
+    $scope.$on('conv.messagesent', () => {
+      let currentConv = this.findFirstMatch(
+        this.conversations,
+        conv => conv.id === this.currentConversation.id
+      );
+      currentConv.lastMessageTime = Date.now();
+    });
 
   }
 
-  getSingleConvTarge(members) {
+  findFirstMatch(arr, check) {
+    for (let i = 0, len = arr.length; i < len; i++) {
+      if (check(arr[i], i)) {
+        return arr[i];
+      }
+    }
+  }
+
+  getSingleConvTarget(members) {
     if (members[0] === this.userService.user.id) {
       return members[1];
     } else {
