@@ -15,7 +15,7 @@ import MessageDirective from './components/message/message.directive';
 angular.module('leanmessageDemo', ['ngResource', 'ui.router', 'ngMaterial', 'ui.gravatar', 'leancloud-realtime'])
   .constant('md5', md5)
   .constant('defaultConversation', {
-    id: '551a2847e4b04d688d73dc54'
+    id: '55cd829e60b2b52cda834469'
   })
   .config(config)
   .config(routerConfig)

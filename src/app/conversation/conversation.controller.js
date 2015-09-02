@@ -9,7 +9,7 @@ class ConversationController {
 
     this.defaultConversation = defaultConversation;
 
-    // this.conversations = conversationCache.getConversationHistory();
+    this.conversations = [];
 
     this.isMenuOpen = undefined;
 
@@ -28,9 +28,8 @@ class ConversationController {
       }
     });
 
-    rt.on('message', (message) => console.log(message));
-
     rt.on('message', (message) => {
+      console.log(message);
       // 某个对话收到消息后更新该对话的 lastMessageTime 字段
       let conv = this.findFirstMatch(
         this.conversations,
@@ -42,6 +41,7 @@ class ConversationController {
             conv.unreadMessagesCount = 0;
           }
           conv.unreadMessagesCount++;
+          $scope.$broadcast('unreadMessageAdd');
         }
       }
 
@@ -54,19 +54,33 @@ class ConversationController {
         this.conversations,
         conv => conv.id === this.currentConversation.id
       );
-      currentConv.unreadMessagesCount = 0;
+      if (currentConv) {
+        currentConv.unreadMessagesCount = 0;
+      }
+      let totalUnreadMessageCount = this.conversations.reduce(
+        (previous, conv) => previous + (conv.unreadMessagesCount || 0),
+        0
+      );
+      if (totalUnreadMessageCount > 0) {
+        $scope.$broadcast('unreadMessageAdd');
+      }
     });
     $scope.$on('conv.messagesent', () => {
       let currentConv = this.findFirstMatch(
         this.conversations,
         conv => conv.id === this.currentConversation.id
       );
-      currentConv.lastMessageTime = Date.now();
+      if (currentConv) {
+        currentConv.lastMessageTime = Date.now();
+      }
     });
 
   }
 
   findFirstMatch(arr, check) {
+    if (!arr) {
+      return;
+    }
     for (let i = 0, len = arr.length; i < len; i++) {
       if (check(arr[i], i)) {
         return arr[i];

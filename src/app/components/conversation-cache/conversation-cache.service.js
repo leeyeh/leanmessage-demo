@@ -1,7 +1,8 @@
 class ConversationCacheService {
-  constructor($log) {
+  constructor($log, rt) {
     'ngInject';
     this.$log = $log;
+    this.rt = rt;
     this._RELATION_KEY = 'clientConversationRelations';
     this._HISTORY_KEY = 'conversationHistory';
     this.clientConversationRelations = {};
@@ -32,9 +33,19 @@ class ConversationCacheService {
       throw new Error('currentClientId for ConversationCacheService not set.');
     }
     var key = [clientId, this.currentClientId].sort().join(' ');
+    // 先从 localstorage 中查询
     if (this.clientConversationRelations[key]) {
       return this.clientConversationRelations[key];
     }
+    // 然后查 server
+    this.rt.queryConvs({
+      where: {
+        m: {
+          $size: 2,
+          $all: [clientId, this.currentClientId],
+        }
+      }
+    }).then((convs) => console.log(1, convs));
     return null;
   }
 

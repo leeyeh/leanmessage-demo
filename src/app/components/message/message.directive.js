@@ -6,7 +6,8 @@ function MessageDirective() {
     scope: {
       message: '=',
       previousMessage: '=',
-      isMine: '='
+      isMine: '=',
+      onNameClick: '&'
     },
     templateUrl: 'app/components/message/message.html',
     controller: MessageController,

@@ -43,11 +43,7 @@ class ConversationMessageController {
       // 群聊
       this.isGroupConversation = true;
       conversationId = conversationRoute;
-      conversationPromise = rt.conv(conversationId).then(
-        (conv) => conv.join().then(
-          () => $q.resolve(conv)
-        )
-      );
+      conversationPromise = rt.conv(conversationId);
     } else if (conversationRoute === '') {
       this.changeTo(defaultConversation.id, {
         location: 'replace'
@@ -77,6 +73,9 @@ class ConversationMessageController {
         };
       }.bind(this));
     }
+
+    // 当有未读消息时，菜单按钮显示小红点
+    $scope.$on('unreadMessageAdd', () => this.hasUnreadMessage = true);
 
   }
 
