@@ -4,7 +4,6 @@ class ConversationCacheService {
     this.$log = $log;
     this.rt = rt;
     this._RELATION_KEY = 'clientConversationRelations';
-    this._HISTORY_KEY = 'conversationHistory';
     this.clientConversationRelations = {};
     try {
       this.clientConversationRelations = JSON.parse(localStorage.getItem(this._RELATION_KEY)) || {};
@@ -18,7 +17,6 @@ class ConversationCacheService {
     try {
       [
         '_RELATION_KEY',
-        '_HISTORY_KEY'
       ].forEach((key) => localStorage.removeItem(this[key]));
     } catch (e) {}
     this.clientConversationRelations = {};
@@ -59,24 +57,6 @@ class ConversationCacheService {
       localStorage.setItem(this._RELATION_KEY, JSON.stringify(this.clientConversationRelations));
     } catch (e) {
       this.$log.warn('Error occurred saving clientConversationRelations to localStorage:', e);
-    }
-  }
-
-  getConversationHistory() {
-    var conversationHistory = [];
-    try {
-      conversationHistory = JSON.parse(localStorage.getItem(this._HISTORY_KEY)) || [];
-    } catch (e) {
-      this.$log.warn('Error occurred parsing conversationHistory from localStorage:', e);
-    }
-    return conversationHistory;
-  }
-
-  setConversationHistory(conversationHistory = []) {
-    try {
-      conversationHistory = localStorage.setItem(this._HISTORY_KEY, JSON.stringify(conversationHistory));
-    } catch (e) {
-      this.$log.warn('Error occurred saving conversationHistory from localStorage:', e);
     }
   }
 }
